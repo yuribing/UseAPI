@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+   
+   <head>
+      <script src = "https://maps.googleapis.com/maps/api/js"></script>
+      
+      <script>
+         function loadMap(parlat, parlng, parPlace) {
+              
+            var radioButtonArray = document.getElementsByName('radioButtonID');
+
+            for (var i=0; i<radioButtonArray.length; i++)
+            {
+               var radioButton = radioButtonArray[i];
+               radioButton.checked = false;
+            }
+
+            var startPos;
+            var geoOptions = {
+               enableHighAccuracy: true
+            }
+            var lat, lng, place;
+            var geoSuccess = function(position) {
+               startPos = position;
+               lat = (parlat)?parlat.toFixed(6):startPos.coords.latitude.toFixed(6);
+               lng = (parlng)?parlng.toFixed(6):startPos.coords.longitude.toFixed(6);
+               place = (parPlace)?parPlace:"Your current location";
+
+               document.getElementById('startLat').innerHTML = lat;
+               document.getElementById('startLon').innerHTML = lng;
+               var mapOptions = {
+                  center:new google.maps.LatLng(lat,lng),
+                  zoom:15
+               }
+
+               var map = new google.maps.Map(document.getElementById("sample"),mapOptions);
+
+               var personIcon = {
+                  url: "person2.png",
+                  scaledSize: new google.maps.Size(50, 50), // scaled size
+                  origin: new google.maps.Point(0, 0), // origin
+                  anchor: new google.maps.Point(0, 0) // anchor
+               };
+
+               var marker = new google.maps.Marker({
+                  position: new google.maps.LatLng(lat,lng),
+                  map: map,
+                  draggable: true,
+                  icon: personIcon
+               });
+               const contentstrings = 
+                  "<div id='gmap'> Latitude is "+lat+", Longitude is "+lng+" of "+place+"." +
+                  '<p>Web Development Syndicate, <a href="https://www.tccd.edu/services/student-life/clubs-and-organizations/northwest-campus-organizations/">' +
+                  "Join Now!</a></p>" +
+                  "</div>";
+               marker.setMap(map);
+               var infowindow = new google.maps.InfoWindow({
+                  content: contentstrings,
+                  title: "Uluru (Ayers Rock)",
+               });
+               infowindow.open(map,marker);
+            };
+
+				
+            var geoError = function(error) {
+               console.log('Error occurred. Error code: ' + error.code);
+               // error.code can be:
+               //   0: unknown error
+               //   1: permission denied
+               //   2: position unavailable (error response from location provider)
+               //   3: timed out
+            };
+            navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
+         }
+      </script>
+      
+   </head>
+   
+   <body onload = "loadMap()">
+      <div class="grid-container">
+
+         <main>
+            <input name ="radioButtonID" type="radio" onClick="loadMap(41.8719, 12.5674, 'Italy');"> Italy<br>
+            <input name ="radioButtonID" type="radio" onClick="loadMap(32.8321, -97.3902, 'TCC NW');"> TCC NW<br>
+            <input name ="radioButtonID" type="radio" onClick="loadMap(35.6762, 139.6503, 'Tokyo');"> Tokyo<br>
+         </main>
+         <section class="nom">
+            Japan Tokyo
+         </section>
+         <section class="yum">
+            Italy Rome
+         </section>
+         <section class="diabeetus">
+            USA TCC NW
+         </section>
+         <header>
+            <span>Your current latitude :<div id="startLat"></div> </span>
+            <span>Your current longitude :<div id="startLon"></div> </span>
+         </header>
+         <div class="candy"  id = "sample"></div>
+ 
+     </div>
+   </body>
+
+   <style>
+* {
+   padding: 0;
+   font-size: 16px;
+   font-weight: bold;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    color: beige;
+   }
+
+span {
+   color:#dcdef599;
+   font-family: 'Lucida Sans', Arial, sans-serif; 
+   font-size: 16px; 
+   line-height: 26px; 
+   text-indent: 30px; 
+   margin: 0;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1.5fr;
+    grid-template-rows: 1fr 4fr 3fr 2fr;
+    grid-template-areas:
+        "main   main    header"
+        "main   main    candy"
+        "nom    yum     candy"
+        "footer footer  candy";
+
+   height: 100vh;
+   /* margin: 2em; */
+}
+
+main {
+   grid-area: main;
+   background: #FFFADF;
+   background: url('https://placeimg.com/1000/695/animals');
+   background-position:center center;
+   background-repeat: no-repeat;
+   background-size: cover;
+   padding: 2em;
+}
+
+section.nom {
+   grid-area: nom;
+   background: url('https://www.commonwealthfund.org/sites/default/files/styles/countries_hero_desktop/public/country_image_Japan.jpg?h=fcdfd899&itok=YWWi9dFQ');
+   background-position:center center;
+   background-repeat: no-repeat;
+   background-size: cover;
+   padding: 2em;
+}
+
+section.yum {
+   grid-area: yum;
+   background: #333333;
+   background: url('https://live.staticflickr.com/7610/16800139540_36cf1bde89_b.jpg');
+   background-position:center center;
+   background-repeat: no-repeat;
+   background-size: cover;
+   padding: 2em;
+}
+
+section.diabeetus {
+   grid-area: footer;
+   background: url('https://www.tccd.edu/magazine/assets/images/volume-03/issue-02/leblanc/elva-lablanc-header.jpg');
+   background-position:center center;
+   background-repeat: no-repeat;
+   background-size: cover;
+   padding: 2em;
+   
+}
+
+header {
+   background: #193a09;
+   padding: 10px;
+}
+.candy {
+    grid-area: candy;
+    background: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/2621168/candy.jpg') no-repeat;
+    background-size: cover;
+}
+
+#gmap{
+   color:darkslategray !important;
+}
+   </style>
+   
+</html>
